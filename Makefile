@@ -1,8 +1,8 @@
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -pipe 
-OFLAGS = -c -Iinclude/
+CFLAGS = -Wall -pipe -Iinclude
+OFLAGS = -c -I/usr/include
 LFLAGS = $(CFLAGS) -L/usr/lib/
 
 SOURCES = $(wildcard src/*.c)
@@ -24,16 +24,16 @@ endif
 
 CFLAGS += $(OPTIMIZATION)
 
-all: minivim
+all: main
 
-minivim: $(OBJECTS)
-	$(CC) $(OBJECTS) $(CFLAGS) -o minivim
+main: $(OBJECTS)
+	$(CC) $(OBJECTS) $(CFLAGS) -o main
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o minivim
+	rm -rf *.o main
 
 rebuild: clean all
 

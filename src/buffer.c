@@ -3,29 +3,41 @@
 
 #include "buffer.h"
 
-struct Buffer* buffer_init() {
-    struct Buffer *buf = malloc(sizeof *buf);
-    buf->buf  = malloc(INIT_BUFSIZ);
+struct append_buffer* ab_new() 
+{
+    struct append_buffer *buf = malloc(sizeof(struct append_buffer));
+    buf->buffer  = malloc(INIT_BUFSIZ);
     buf->size = INIT_BUFSIZ;
     buf->len  = 0;
     return buf;
 }
 
-void buffer_free(struct Buffer *buf) {
-    free(buf->buf);
+void ab_free(struct append_buffer *buf) 
+{
+    free(buf->buffer);
     free(buf);
 }
 
-void buffer_resize(struct Buffer *buf, const uint size) {
-    buf->buf = realloc(buf->buf, size);
+void ab_resize(struct append_buffer *buf, uint size) 
+{
+    buf->buffer = realloc(buf->buffer, size);
     buf->size = size;
 }
 
-void buffer_append(struct Buffer *buf, const char *str, const uint len) {
+void ab_append(struct append_buffer *buf, char *str, uint len) 
+{
     while (buf->len + len > buf->size) {
-        buffer_resize(buf, 2 * buf->size);
+        ab_resize(buf, 2 * buf->size);
     }
-    memmove(buf->buf + buf->len, str, len);
+    memmove(buf->buffer + buf->len, str, len);
     buf->len += len;
 }
 
+char* ab_extract_text(struct append_buffer *buf)
+{
+    char *ret = malloc(buf->len + 1);
+    strncpy(ret, buf->buffer, buf->len);
+    ret[buf->len] = '\0';
+    
+    return ret;
+}
